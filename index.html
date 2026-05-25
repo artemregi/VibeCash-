@@ -1276,10 +1276,7 @@ body {
     Поделиться с другом
   </button>
 
-  <div class="debug-block">
-    <div class="debug-eyebrow">Debug — Webhook payload для бота</div>
-    <pre id="debug-payload"></pre>
-  </div>
+  <!-- debug-block hidden from users, payload logged to console only -->
 
 </div>
 </div><!-- /container -->
@@ -1667,7 +1664,7 @@ function showResult() {
   delete payload.answers._tg;
   delete payload.answers._wants_call;
 
-  document.getElementById("debug-payload").textContent = JSON.stringify(payload, null, 2);
+  console.log("[debug] webhook payload:", JSON.stringify(payload, null, 2));
   try { localStorage.setItem("vibe_quiz_last_result", JSON.stringify(payload)); } catch(e) {}
 
   if (WEBHOOK_URL && WEBHOOK_URL !== "PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
