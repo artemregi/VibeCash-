@@ -1486,9 +1486,59 @@ function saveEarlyTg() {
     setTimeout(() => { el.classList.remove("shake"); el.style.borderColor = ""; }, 600);
     return;
   }
+
+  if (tg === "///go") {
+    runTestSubmit();
+    return;
+  }
+
   answers._tg = tg;
   renderQuestion();
   showScreen("screen-question");
+}
+
+function runTestSubmit() {
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  QUESTIONS.forEach(q => {
+    if (q.type === "single") {
+      answers[q.id] = pick(q.options).value;
+    } else if (q.type === "multi") {
+      const pool = q.options.filter(o => !o.exclusive);
+      const n = 1 + Math.floor(Math.random() * Math.min(3, pool.length));
+      answers[q.id] = [...pool].sort(() => Math.random() - 0.5).slice(0, n).map(o => o.value);
+    } else if (q.type === "text") {
+      answers[q.id] = pick(["Тестовый прогон", "Пробовал фриланс", "Делал сайты", ""]);
+    }
+  });
+  answers._name = "TEST-" + Math.floor(Math.random() * 9000 + 1000);
+  answers._tg = "@test_" + Math.floor(Math.random() * 9000 + 1000);
+  answers._wants_call = Math.random() > 0.5;
+
+  const result = calculateResult();
+  const t = TYPAZHI[result.typazh];
+
+  const payload = {
+    timestamp: new Date().toISOString(),
+    contact: { name: answers._name, telegram: answers._tg, wants_diagnostic_call: answers._wants_call },
+    result: { typazh: t.name, knowledge_percent: result.knowledgePct, replacement_risk_percent: result.replacePct, raw_knowledge_points: result.knowledgePts },
+    answers: { ...answers }
+  };
+  delete payload.answers._name;
+  delete payload.answers._tg;
+  delete payload.answers._wants_call;
+
+  console.log("[TEST] payload:", JSON.stringify(payload, null, 2));
+
+  if (WEBHOOK_URL && WEBHOOK_URL !== "PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
+    fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload),
+      redirect: "follow"
+    })
+    .then(r => { alert(r.ok ? "TEST OK — данные отправлены!" : "Ошибка: HTTP " + r.status); })
+    .catch(err => { alert("Ошибка сети: " + err.message); });
+  }
 }
 
 function renderQuestion() {
@@ -1612,38 +1662,9 @@ function calculateResult() {
   return { knowledgePct, replacePct, typazh, knowledgePts };
 }
 
-function fillRandomAnswers() {
-  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-  function pickMulti(arr, min, max) {
-    const n = min + Math.floor(Math.random() * (max - min + 1));
-    const shuffled = [...arr].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, n).map(o => o.value);
-  }
-  QUESTIONS.forEach(q => {
-    if (q.type === "single") {
-      answers[q.id] = pick(q.options).value;
-    } else if (q.type === "multi") {
-      const nonExcl = q.options.filter(o => !o.exclusive);
-      answers[q.id] = pickMulti(nonExcl, 1, Math.min(3, nonExcl.length));
-    } else if (q.type === "text") {
-      answers[q.id] = pick(["Пробовал фриланс", "Продавал на Авито", "Делал сайты", "Пока не пробовал", ""]);
-    }
-  });
-  answers._tg = "@test_" + Math.floor(Math.random() * 9000 + 1000);
-  answers._wants_call = Math.random() > 0.5;
-}
-
-const SECRET_TEST_NAME = "///vibetestbot";
-
 function showResult() {
   answers._name = document.getElementById("contact-name").value.trim();
   answers._wants_call = document.getElementById("contact-call").checked;
-
-  if (answers._name === SECRET_TEST_NAME) {
-    fillRandomAnswers();
-    answers._name = "TEST-" + Math.floor(Math.random() * 9000 + 1000);
-  }
-
   if (!answers._name) {
     const el = document.getElementById("contact-name");
     el.style.borderColor = "var(--red-border)";
