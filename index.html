@@ -1285,6 +1285,7 @@ body {
 // ── Telegram напрямую ──
 const TG_BOT = "8747524672:AAEv7-IJv_uLBVueeiGiSv_q3dpnSSQOqJY";
 const TG_CHAT = "-4996740635";
+const WORKER_URL = "https://broken-forest-9451.higidra1946.workers.dev";
 
 const HUMAN_LABEL = {
   age:        { "<18":"До 18", "18-25":"18–25", "25-30":"25–30", "30-40":"30–40", "40+":"40+" },
@@ -1601,10 +1602,10 @@ function runTestSubmit() {
     .then(j => { alert(j.ok ? "TEST OK — отправлено в Telegram!" : "Ошибка TG: " + JSON.stringify(j)); })
     .catch(err => { alert("Ошибка сети: " + err.message); });
 
-  fetch("https://api.telegram.org/bot" + TG_BOT + "/sendMessage", {
+  fetch(WORKER_URL + "/save", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: TG_CHAT, text: "###LEAD###" + JSON.stringify(payload) })
+    body: JSON.stringify(payload)
   }).catch(() => {});
 }
 
@@ -1790,10 +1791,10 @@ function showResult() {
     .catch(err => console.error("TG error:", err));
 
   // Отправляем JSON через бота — скрипт поймает и сохранит для CSV
-  fetch("https://api.telegram.org/bot" + TG_BOT + "/sendMessage", {
+  fetch(WORKER_URL + "/save", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: TG_CHAT, text: "###LEAD###" + JSON.stringify(payload) })
+    body: JSON.stringify(payload)
   }).catch(() => {});
 }
 </script>
