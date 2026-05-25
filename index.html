@@ -246,38 +246,47 @@ body {
   letter-spacing: 0.01em;
 }
 
-/* Perks list */
-.perks {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
+/* Perks grid */
+.perks-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
   overflow: hidden;
   margin-bottom: 20px;
 }
 
-.perk {
+.perk-card {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  font-size: 13.5px;
+  text-align: center;
+  gap: 8px;
+  padding: 16px 12px;
+  font-size: 13px;
   color: var(--t1);
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.4;
-  border-bottom: 1px solid var(--border);
-  transition: background var(--t-fast) var(--ease);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
 }
 
-.perk:last-child { border-bottom: none; }
-.perk:hover { background: var(--surface-2); }
+.perk-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
 
-.perk-mark {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  background: var(--orange-dim);
-  border-radius: 5px;
-  display: flex;
+.perk-emoji {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.perk-text {
+  font-size: 13px;
+  color: var(--t2);
+  font-weight: 500;
+}
+
+.perk-mark-unused {
+  display: none;
   align-items: center;
   justify-content: center;
 }
@@ -1028,42 +1037,22 @@ body {
     </div>
   </div>
 
-  <div class="perks">
-    <div class="perk">
-      <span class="perk-mark">
-        <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
-          <circle cx="6" cy="6" r="5" stroke="#D95E1E" stroke-width="1.5"/>
-          <path d="M4 6l1.5 1.5L8 4" stroke="#D95E1E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </span>
-      Реальный уровень владения ИИ
+  <div class="perks-grid">
+    <div class="perk-card">
+      <span class="perk-emoji">🧠</span>
+      <span class="perk-text">Реальный уровень владения ИИ</span>
     </div>
-    <div class="perk">
-      <span class="perk-mark">
-        <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
-          <circle cx="6" cy="6" r="5" stroke="#D95E1E" stroke-width="1.5"/>
-          <path d="M4 6l1.5 1.5L8 4" stroke="#D95E1E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </span>
-      Шанс замены к 2026–2027
+    <div class="perk-card">
+      <span class="perk-emoji">⚠️</span>
+      <span class="perk-text">Шанс замены к 2026–2027</span>
     </div>
-    <div class="perk">
-      <span class="perk-mark">
-        <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
-          <circle cx="6" cy="6" r="5" stroke="#D95E1E" stroke-width="1.5"/>
-          <path d="M4 6l1.5 1.5L8 4" stroke="#D95E1E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </span>
-      ИИ-профессия под твой профиль и доход
+    <div class="perk-card">
+      <span class="perk-emoji">💼</span>
+      <span class="perk-text">ИИ-профессия под твой профиль</span>
     </div>
-    <div class="perk">
-      <span class="perk-mark">
-        <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
-          <circle cx="6" cy="6" r="5" stroke="#D95E1E" stroke-width="1.5"/>
-          <path d="M4 6l1.5 1.5L8 4" stroke="#D95E1E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </span>
-      Персональный PDF-бонус по итогам
+    <div class="perk-card">
+      <span class="perk-emoji">🎁</span>
+      <span class="perk-text">Гайд по заработку на вайб-кодинге</span>
     </div>
   </div>
 
