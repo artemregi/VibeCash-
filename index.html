@@ -1668,8 +1668,14 @@ function showResult() {
   try { localStorage.setItem("vibe_quiz_last_result", JSON.stringify(payload)); } catch(e) {}
 
   if (WEBHOOK_URL && WEBHOOK_URL !== "PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
-    fetch(WEBHOOK_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) })
-      .catch(err => console.error("Webhook error:", err));
+    fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload),
+      redirect: "follow"
+    })
+    .then(r => { if (!r.ok) console.error("Webhook HTTP", r.status); else console.log("[webhook] sent OK"); })
+    .catch(err => console.error("Webhook error:", err));
   }
 }
 </script>
