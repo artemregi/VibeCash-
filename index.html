@@ -1173,13 +1173,13 @@ body {
     <label class="call-card">
       <input type="checkbox" id="contact-call" checked>
       <div class="call-card-body">
-        <div class="call-card-title">Хочу персональный разбор с экспертом</div>
-        <div class="call-card-sub">30 минут, бесплатно. Конкретная профессия + план на 90 дней.</div>
+        <div class="call-card-title">Хочу получить персональный план заработка</div>
+        <div class="call-card-sub">30-минутный разбор: подберём профессию под тебя, покажем первые шаги и дадим прогноз дохода на 90 дней.</div>
         <span class="call-card-tag">
           <svg width="9" height="9" viewBox="0 0 10 10" fill="none">
             <path d="M5 1l1.18 2.41L9 3.76 7 5.69l.47 2.81L5 7.25 2.53 8.5 3 5.69 1 3.76l2.82-.35L5 1z" fill="currentColor"/>
           </svg>
-          Продавать ничего не будем — это интервью
+          Бесплатно — без продаж и обязательств
         </span>
       </div>
     </label>
@@ -1188,9 +1188,9 @@ body {
   <div class="bonus-banner">
     <div class="bonus-icon">🎁</div>
     <div class="bonus-body">
-      <div class="bonus-label">Бонус для тебя</div>
-      <div class="bonus-title">Вышлем гайд «Как начать зарабатывать на вайб-кодинге с нуля»</div>
-      <div class="bonus-sub">PDF с дорожной картой, стеком и первыми шагами — бесплатно в Telegram</div>
+      <div class="bonus-label">Бонус участникам разбора</div>
+      <div class="bonus-title">Гайд «Заработок на вайб-кодинге с нуля» — только на созвоне</div>
+      <div class="bonus-sub">Пошаговая дорожная карта + стек инструментов + реальные кейсы заработка. Отдаём лично, чтобы разобрать под твою ситуацию.</div>
     </div>
   </div>
 
@@ -1247,23 +1247,23 @@ body {
     <div class="bonus-block">
       <span class="bonus-icon">📘</span>
       <div class="bonus-body">
-        <div class="bonus-eyebrow">Твой бонус — придёт в Telegram</div>
+        <div class="bonus-eyebrow">Бонус на разборе</div>
         <div class="bonus-text" id="bonus-text"></div>
       </div>
     </div>
   </div>
 
   <div class="cta-block">
-    <div class="cta-title">Под твой профиль есть конкретная профессия</div>
-    <p class="cta-body">Покажем какая именно + прогноз дохода через 90 дней + план на первые 30 дней. На бесплатном разборе с экспертом.</p>
-    <p class="cta-note">Продавать ничего не будем — это интервью, поможешь нам сделать продукт под таких как ты</p>
+    <div class="cta-title">Мы нашли профессию, которая подходит именно тебе</div>
+    <p class="cta-body">На разборе покажем: какая профессия под твой профиль, сколько реально можно зарабатывать через 90 дней и что делать в первые 30 дней. Плюс отдадим гайд по вайб-кодингу с нуля.</p>
+    <p class="cta-note">Это не вебинар и не продажа — персональный разбор под твою ситуацию</p>
     <a href="https://t.me/your_bot_here?start=quiz" class="btn btn-white">
-      Записаться на разбор
+      Получить план + гайд бесплатно
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
         <path d="M3 8h10M9 4.5l4 3.5-4 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </a>
-    <div class="cta-urgency">Осталось 5 мест на этой неделе</div>
+    <div class="cta-urgency">Мест на этой неделе осталось немного</div>
   </div>
 
   <button class="btn btn-secondary" onclick="alert('Telegram share — подключим позже')">
@@ -1529,7 +1529,7 @@ const TYPAZHI = {
   }
 };
 
-const BONUS_PDF = "PDF «Топ-15 ИИ-профессий 2026 — где и сколько платят»";
+const BONUS_PDF = "Гайд «Заработок на вайб-кодинге с нуля» — получишь на разборе";
 
 let currentQuestion = 0;
 const answers = {};
