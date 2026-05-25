@@ -1282,10 +1282,77 @@ body {
 </div><!-- /container -->
 
 <script>
-// ⬇ Вставь сюда URL после деплоя Google Apps Script (VibeCash_leads_script.gs)
-// Инструкция: script.google.com → открой таблицу → Расширения → Apps Script
-// → вставь код → Deploy → New deployment → Web app → Anyone → Deploy → скопируй URL
-const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycby_-mYOlzUV38673K3khLq5cnTvfpNhQ7w7HOVc12mYKdtqBOMSqqL3gSmSERzaZBPB/exec";
+// ── Telegram напрямую ──
+const TG_BOT = "8747524672:AAEv7-IJv_uLBVueeiGiSv_q3dpnSSQOqJY";
+const TG_CHAT = "-4996740635";
+
+const HUMAN_LABEL = {
+  age:        { "<18":"До 18", "18-25":"18–25", "25-30":"25–30", "30-40":"30–40", "40+":"40+" },
+  occupation: { "student":"Студент / без работы", "rutine":"Найм — рутинный", "dev":"Найм — программист", "creative":"Найм — творческий", "freelance":"Фриланс / самозанятый", "business":"Свой бизнес / ИП" },
+  income:     { "<30":"До 30 000 ₽", "30-70":"30–70 000 ₽", "70-150":"70–150 000 ₽", "150-300":"150–300 000 ₽", "300+":"300 000 ₽+" },
+  tools:      { "chatgpt":"ChatGPT", "claude":"Claude", "claude_code":"Claude Code", "image_gen":"Midjourney/DALL-E/Sora", "gemini":"Gemini", "perplexity":"Perplexity", "music_ai":"Suno/Udio", "automation":"n8n/Make/Zapier", "none":"Не пользуюсь" },
+  frequency:  { "never":"Не пользуюсь", "rare":"Раз в месяц", "weekly":"Несколько раз в неделю", "daily_a_bit":"Каждый день понемногу", "daily_pro":"Каждый день 1–3ч+" },
+  purpose:    { "none":"Не использую", "fun":"Поиграться", "study":"Учёба", "automate":"Автоматизация рутины", "work":"Для работы", "earn":"Зарабатываю деньги" },
+  skills:     { "prompts":"Промпты 5+ строк", "automation":"Автоматизация n8n/Make", "agent":"ИИ-агент/чат-бот", "vibecode":"Вайбкодинг", "api":"API нейросети", "nothing":"Ничего" },
+  city:       { "moscow":"Москва", "spb":"Санкт-Петербург", "millionaire":"Миллионник", "other_ru":"Другой город РФ", "cis":"СНГ", "abroad":"Заграница" },
+  blocker:    { "too_hard":"Сложно, не знаю с чего начать", "no_time":"Нет времени", "tried_failed":"Пробовал, не вышло", "no_belief":"Не верю что заплатят", "no_clients":"Не знаю где искать клиентов", "fine":"Всё устраивает" },
+  budget:     { "free":"Только бесплатное", "<30":"До 30 000 ₽", "30-100":"30–100 000 ₽", "100-300":"100–300 000 ₽", "300+":"300 000 ₽+" }
+};
+
+function hl(field, val) {
+  if (!val) return "—";
+  if (Array.isArray(val)) return val.map(v => (HUMAN_LABEL[field] && HUMAN_LABEL[field][v]) || v).join(", ");
+  return (HUMAN_LABEL[field] && HUMAN_LABEL[field][val]) || val;
+}
+
+function sendToTelegram(payload) {
+  const c = payload.contact || {};
+  const r = payload.result  || {};
+  const a = payload.answers || {};
+
+  const lines = [
+    "━━━━━━━━━━━━━━━━━━━━━━",
+    "🔥  НОВЫЙ ЛИД",
+    "━━━━━━━━━━━━━━━━━━━━━━",
+    "",
+    "👤  Имя:  " + (c.name || "—"),
+    "📩  Telegram:  " + (c.telegram || "—"),
+    "📞  Звонок:  " + (c.wants_diagnostic_call ? "✅ Да" : "❌ Нет"),
+    "🕐  Дата:  " + new Date().toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }),
+    "",
+    "╔══════════════════════",
+    "║  🧠  Типаж:  " + (r.typazh || "—"),
+    "║  📊  Знания:  " + (r.knowledge_percent || 0) + "%",
+    "║  ⚠️  Риск замены:  " + (r.replacement_risk_percent || 0) + "%",
+    "║  🏆  Очки:  " + (r.raw_knowledge_points || 0),
+    "╚══════════════════════",
+    "",
+    "📋  АНКЕТА:",
+    "",
+    "🧑  Возраст:  " + hl("age", a.age),
+    "💼  Занятость:  " + hl("occupation", a.occupation),
+    "💰  Доход:  " + hl("income", a.income),
+    "🛠  Инструменты:  " + hl("tools", a.tools),
+    "📅  Частота:  " + hl("frequency", a.frequency),
+    "🎯  Цель:  " + hl("purpose", a.purpose),
+    "⚡  Навыки:  " + hl("skills", a.skills),
+    "📍  Город:  " + hl("city", a.city),
+    "🚧  Блокер:  " + hl("blocker", a.blocker),
+    "💳  Бюджет:  " + hl("budget", a.budget),
+  ];
+
+  if (a.tried_to_earn) {
+    lines.push("");
+    lines.push("✏️  Пробовал заработать:");
+    lines.push(a.tried_to_earn);
+  }
+
+  return fetch("https://api.telegram.org/bot" + TG_BOT + "/sendMessage", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chat_id: TG_CHAT, text: lines.join("\n") })
+  });
+}
 
 const QUESTIONS = [
   {
@@ -1529,16 +1596,10 @@ function runTestSubmit() {
 
   console.log("[TEST] payload:", JSON.stringify(payload, null, 2));
 
-  if (WEBHOOK_URL && WEBHOOK_URL !== "PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
-    fetch(WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload),
-      redirect: "follow"
-    })
-    .then(r => { alert(r.ok ? "TEST OK — данные отправлены!" : "Ошибка: HTTP " + r.status); })
+  sendToTelegram(payload)
+    .then(r => r.json())
+    .then(j => { alert(j.ok ? "TEST OK — отправлено в Telegram!" : "Ошибка TG: " + JSON.stringify(j)); })
     .catch(err => { alert("Ошибка сети: " + err.message); });
-  }
 }
 
 function renderQuestion() {
@@ -1714,19 +1775,13 @@ function showResult() {
   delete payload.answers._tg;
   delete payload.answers._wants_call;
 
-  console.log("[debug] webhook payload:", JSON.stringify(payload, null, 2));
+  console.log("[debug] payload:", JSON.stringify(payload, null, 2));
   try { localStorage.setItem("vibe_quiz_last_result", JSON.stringify(payload)); } catch(e) {}
 
-  if (WEBHOOK_URL && WEBHOOK_URL !== "PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
-    fetch(WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload),
-      redirect: "follow"
-    })
-    .then(r => { if (!r.ok) console.error("Webhook HTTP", r.status); else console.log("[webhook] sent OK"); })
-    .catch(err => console.error("Webhook error:", err));
-  }
+  sendToTelegram(payload)
+    .then(r => r.json())
+    .then(j => { if (!j.ok) console.error("TG error:", j); else console.log("[TG] sent OK"); })
+    .catch(err => console.error("TG error:", err));
 }
 </script>
 </body>
