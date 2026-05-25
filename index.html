@@ -33,10 +33,14 @@
   --ink-hover: #A33A05;
   --ink-fg:    #FFFFFF;
 
-  /* Interactive orange — выделение */
+  /* Interactive — мягкий тёплый (для выбора ответов) */
   --orange:        #D95E1E;
   --orange-dim:    #FEF1E8;
   --orange-border: #E87540;
+
+  /* Navigation — тёмный нейтральный (для кнопок Далее/Назад) */
+  --nav:       #2C2320;
+  --nav-hover: #1A1310;
 
   /* Semantic */
   --green:        #2E7D32;
@@ -467,8 +471,9 @@ body {
 }
 
 .option.selected {
-  border-color: var(--orange-border);
-  background: var(--orange-dim);
+  border-color: #C49A6C;
+  background: #FFF8F0;
+  box-shadow: 0 0 0 1px #C49A6C;
 }
 
 .option:focus-visible {
@@ -495,8 +500,8 @@ body {
 }
 
 .option.selected .opt-indicator {
-  border-color: var(--orange);
-  background: var(--orange);
+  border-color: #A0714A;
+  background: #A0714A;
 }
 
 .option.selected .opt-indicator::after {
@@ -581,7 +586,16 @@ body {
   margin-top: 6px;
 }
 
-.nav-buttons .btn-primary { flex: 1; }
+.nav-buttons .btn-primary {
+  flex: 1;
+  background: var(--nav);
+  border-color: var(--nav);
+  color: #fff;
+}
+.nav-buttons .btn-primary:hover {
+  background: var(--nav-hover);
+  border-color: var(--nav-hover);
+}
 
 /* ═══════════════════════════════════════════════
    HELPER TEXT
@@ -1196,7 +1210,7 @@ body {
         <path d="M13 8H3M7 4.5L3 8l4 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
-    <button class="btn btn-primary" onclick="showResult()">
+    <button class="btn btn-green" onclick="showResult()">
       Получить результат + бонус
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
         <path d="M3 8h10M9 4.5l4 3.5-4 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
