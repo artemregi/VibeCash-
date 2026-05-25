@@ -1612,9 +1612,38 @@ function calculateResult() {
   return { knowledgePct, replacePct, typazh, knowledgePts };
 }
 
+function fillRandomAnswers() {
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function pickMulti(arr, min, max) {
+    const n = min + Math.floor(Math.random() * (max - min + 1));
+    const shuffled = [...arr].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, n).map(o => o.value);
+  }
+  QUESTIONS.forEach(q => {
+    if (q.type === "single") {
+      answers[q.id] = pick(q.options).value;
+    } else if (q.type === "multi") {
+      const nonExcl = q.options.filter(o => !o.exclusive);
+      answers[q.id] = pickMulti(nonExcl, 1, Math.min(3, nonExcl.length));
+    } else if (q.type === "text") {
+      answers[q.id] = pick(["Пробовал фриланс", "Продавал на Авито", "Делал сайты", "Пока не пробовал", ""]);
+    }
+  });
+  answers._tg = "@test_" + Math.floor(Math.random() * 9000 + 1000);
+  answers._wants_call = Math.random() > 0.5;
+}
+
+const SECRET_TEST_NAME = "///vibetestbot";
+
 function showResult() {
   answers._name = document.getElementById("contact-name").value.trim();
   answers._wants_call = document.getElementById("contact-call").checked;
+
+  if (answers._name === SECRET_TEST_NAME) {
+    fillRandomAnswers();
+    answers._name = "TEST-" + Math.floor(Math.random() * 9000 + 1000);
+  }
+
   if (!answers._name) {
     const el = document.getElementById("contact-name");
     el.style.borderColor = "var(--red-border)";
